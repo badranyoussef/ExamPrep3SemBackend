@@ -97,10 +97,10 @@ public class HealthProductController implements IHealthProductController {
     public Handler delete() {
         return ctx -> {
             int id = Integer.parseInt(ctx.pathParam("id"));
-            if(dao.getProducts().containsKey(id)){
+            if (dao.getProducts().containsKey(id)) {
                 HealthProductDTO productDTO = dao.delete(id);
                 ctx.json(productDTO).result("Product successfully deleted").status(201);
-            }else{
+            } else {
                 throw new APIException(400, "Product not found.", "" + timestamp);
             }
         };
