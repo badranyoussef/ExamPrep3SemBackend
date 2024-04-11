@@ -57,7 +57,6 @@ public class HealthProductDAOMock {
             return true;
         }
         return false;
-
     }
 
     public Set<HealthProductDTO> getByCategory(String category) {
@@ -131,7 +130,7 @@ public class HealthProductDAOMock {
     }
 
 
-    private HealthProductDTO convertToDTO(Product product) {
+    public HealthProductDTO convertToDTO(Product product) {
         return HealthProductDTO.builder()
                 .id(product.getId())
                 .category(product.getCategory())
@@ -143,7 +142,7 @@ public class HealthProductDAOMock {
                 .build();
     }
 
-    private Product convertToEntity(HealthProductDTO healthProductDTO) {
+    public Product convertToEntity(HealthProductDTO healthProductDTO) {
         return Product.builder()
                 .id(healthProductDTO.getId())
                 .category(healthProductDTO.getCategory())

@@ -11,6 +11,7 @@ import java.util.Map;
 
 public class Main {
     public static void main(String[] args) {
+
         //1.1 creating java-project using javalin framework
         HealthProductRoutes healthProductRoutes = new HealthProductRoutes();
         Javalin healthStoreApp = Javalin.create().start(7070);

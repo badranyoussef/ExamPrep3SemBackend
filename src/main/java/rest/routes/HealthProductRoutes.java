@@ -1,11 +1,7 @@
 package rest.routes;
 
 import controller.HealthProductController;
-import exceptions.APIException;
 import io.javalin.apibuilder.EndpointGroup;
-
-import java.util.Map;
-
 import static io.javalin.apibuilder.ApiBuilder.*;
 import static io.javalin.apibuilder.ApiBuilder.get;
 
@@ -17,79 +13,38 @@ public class HealthProductRoutes {
     public EndpointGroup getHealthRoutes() {
         return () -> path("/healthstore/api/healthproducts", () -> {
 
-            // initiate products
-            post("/initiate", ctx -> {
-                try {
-                    healthProductController.initiateProducts().handle(ctx);
-                } catch (APIException e) {
-                    ctx.json(Map.of(
-                            "status", e.getStatusCode(),
-                            "message", "API ERROR " + e.getMessage(),
-                            "timestamp", e.getTimeStamp().toString()
-                    ));
-                }
-            });
+//        frem for at implementere exceptions ved hver endpoint brnytter jeg globale exceptions som sætte op i javalin konfigurationen
+//
+//            post("/initiate", ctx ->
+//            {
+//                try {
+//                    healthProductController.initiateProducts().handle(ctx);
+//                } catch (APIException e) {
+//                    ctx.json(Map.of(
+//                            "status", e.getStatusCode(),
+//                            "message", "API ERROR " + e.getMessage(),
+//                            "timestamp", e.getTimeStamp().toString()
+//                    ));
+//                }
+//            });
+
+            // initiate all product
+            post("/initiate", ctx -> healthProductController.initiateProducts().handle(ctx));
 
             // get all products
-            get("/", ctx -> {
-                try {
-                    healthProductController.getAll().handle(ctx);
-                } catch (APIException e) {
-                    ctx.json(Map.of(
-                            "status", e.getStatusCode(),
-                            "message", "API ERROR " + e.getMessage(),
-                            "timestamp", e.getTimeStamp().toString()
-                    ));
-                }
-            });
+            get("/", ctx -> healthProductController.getAll().handle(ctx));
 
             // get a product by id
-            get("/{id}", ctx ->{
-                try { healthProductController.getById().handle(ctx);
-                } catch (APIException e) {
-                    ctx.json(Map.of(
-                            "status", e.getStatusCode(),
-                            "message", "API ERROR " + e.getMessage(),
-                            "timestamp", e.getTimeStamp().toString()
-                    ));
-                }
-            });
+            get("/{id}", ctx -> healthProductController.getById().handle(ctx));
 
             // create a product
-            post("/", ctx -> {
-                try {healthProductController.create().handle(ctx);
-                } catch (APIException e) {
-                    ctx.json(Map.of(
-                            "status", e.getStatusCode(),
-                            "message", "API ERROR " + e.getMessage(),
-                            "timestamp", e.getTimeStamp().toString()
-                    ));
-                }
-            });
+            post("/", ctx -> healthProductController.create().handle(ctx));
 
             // update product
-            put("/{id}", ctx -> {
-                try {healthProductController.update().handle(ctx);
-                } catch (APIException e) {
-                    ctx.json(Map.of(
-                            "status", e.getStatusCode(),
-                            "message", "API ERROR " + e.getMessage(),
-                            "timestamp", e.getTimeStamp().toString()
-                    ));
-                }
-            });
+            put("/{id}", ctx -> healthProductController.update().handle(ctx));
 
             // delete product by id
-            delete("/{id}", ctx -> {
-                try {healthProductController.delete().handle(ctx);
-                } catch (APIException e) {
-                    ctx.json(Map.of(
-                            "status", e.getStatusCode(),
-                            "message", "API ERROR " + e.getMessage(),
-                            "timestamp", e.getTimeStamp().toString()
-                    ));
-                }
-            });
+            delete("/{id}", ctx -> healthProductController.delete().handle(ctx));
         });
     }
 }

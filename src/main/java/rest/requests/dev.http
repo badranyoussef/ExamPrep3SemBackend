@@ -3,8 +3,7 @@
 POST http://localhost:7070/healthstore/api/healthproducts/initiate/
 
 
-###
-
+### get all products
 GET http://localhost:7070/healthstore/api/healthproducts/
 
 ###
