@@ -25,7 +25,7 @@ public class HealthProductController implements IHealthProductController {
             if (dao.initiateProducts()) {
                 ctx.result("Products initialized");
             } else {
-                ctx.status(400).result("No products available");
+                ctx.status(400).result("Products not initialized");
             }
         };
     }
