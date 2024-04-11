@@ -80,31 +80,39 @@ public class HealthProductDAOMock {
 
     public HealthProductDTO create(Product product) {
         counter++;
-        if (product == null) {
-            throw new DatabaseException(400,"Product could not be added to database. Product is null",timeStamp);
+        try{
+            product.setId(counter);
+            product.setExpireDate(expireDate);
+            products.put(counter, product);
+        }catch(DatabaseException e){
+            throw new DatabaseException(e.getStatusCode(),"Product could not be added to database. Product is null",e.getTimeStamp());
         }
-        product.setId(counter);
-        product.setExpireDate(expireDate);
-        products.put(counter, product);
         return convertToDTO(product);
     }
 
     public HealthProductDTO update(HealthProductDTO healthProductDTO) {
-        if (!products.containsKey(healthProductDTO.getId())) {
-         throw new EntityNotFoundException("Product not found with ID: "+healthProductDTO.getId());
+
+        Product product = products.get(healthProductDTO.getId());
+        if (product == null) {
+            throw new DatabaseException(400, "Product not found with ID: " + healthProductDTO.getId(), timeStamp);
         }
-        Product product = convertToEntity(healthProductDTO);
-        products.put(product.getId(), product);
+
+        try{
+            product = convertToEntity(healthProductDTO);
+            products.put(product.getId(), product);
+        }catch(DatabaseException e){
+            throw new DatabaseException(e.getStatusCode(),"Unable to update product",e.getTimeStamp());
+        }
         return convertToDTO(product);
     }
 
     public HealthProductDTO delete(int id) {
         if (products.containsKey(id)) {
-            Product removedProduct = products.get(id);
-            products.remove(id);
+            Product removedProduct = products.remove(id); // .remove() returnerer det fjernede objekt, hvis det findes
             return convertToDTO(removedProduct);
+        } else {
+            throw new DatabaseException(400, "Product not found with ID: " + id, timeStamp);
         }
-        return null;
     }
 
     public Set<HealthProductDTO> getTwoWeeksToExpire() {
