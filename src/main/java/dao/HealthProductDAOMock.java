@@ -1,2 +1,146 @@
-package dao;public class HealthProductDAOMock {
+package dao;
+
+import dtos.HealthProductDTO;
+import exceptions.DatabaseException;
+import jakarta.persistence.EntityNotFoundException;
+import lombok.Getter;
+import persistence.model.Product;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
+
+// 1.4.3
+@Getter
+public class HealthProductDAOMock {
+
+    private String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+
+    private Map<Integer, Product> products = new HashMap<>();
+    private int counter = 0;
+    private LocalDate expireDate = LocalDate.now().plusYears(2);
+
+    public Set<Product> getAll() {
+        return new HashSet<>(products.values());
+    }
+
+    public HealthProductDTO getById(int id) {
+        Product product = products.get(id);
+        if (product != null) {
+            return convertToDTO(product);
+        }
+        return null;
+    }
+
+    public boolean initiateProducts() {
+
+        Product p1 = new Product("Mineral", "Magnesium", 63.36, 229, "Magnesium for bedre sundhed og velvære.", LocalDate.of(2024, 6, 20));
+        Product p2 = new Product("Vitamin", "Multivitamin", 25.97, 101, "Multivitamin for bedre sundhed og velvære.", LocalDate.of(2025, 4, 5));
+        Product p3 = new Product("Fiber", "Psyllium Husk", 64.59, 91, "Psyllium Husk for bedre sundhed og velvære.", LocalDate.of(2025, 2, 21));
+        Product p4 = new Product("Mineral", "Zink", 74.9, 329, "Zink for bedre sundhed og velvære.", LocalDate.of(2024, 10, 3));
+        Product p5 = new Product("Mineral", "Magnesium", 8.36, 65, "Magnesium for bedre sundhed og velvære.", LocalDate.of(2025, 3, 16));
+        Product p6 = new Product("Vitamin", "Vitamin C", 64.08, 356, "Vitamin C for bedre sundhed og velvære.", LocalDate.of(2025, 1, 10));
+        Product p7 = new Product("Omega-3", "Fiskeolie", 30.68, 0, "Fiskeolie for bedre sundhed og velvære.", LocalDate.of(2025, 1, 20));
+        Product p8 = new Product("Vitamin", "Vitamin C", 34.0, 456, "Vitamin C for bedre sundhed og velvære.", LocalDate.of(2025, 1, 6));
+        Product p9 = new Product("Fiber", "Psyllium Husk", 17.83, 263, "Psyllium Husk for bedre sundhed og velvære.", LocalDate.of(2024, 10, 15));
+
+        create(p1);
+        create(p2);
+        create(p3);
+        create(p4);
+        create(p5);
+        create(p6);
+        create(p7);
+        create(p8);
+        create(p9);
+
+        if (!products.isEmpty()) {
+            return true;
+        }
+        return false;
+
+    }
+
+    public Set<HealthProductDTO> getByCategory(String category) {
+        Set<HealthProductDTO> filteredProducts = new HashSet<>();
+        boolean found = false;
+
+        for (Product product : products.values()) {
+            if (product.getCategory().equalsIgnoreCase(category)) {
+                filteredProducts.add(convertToDTO(product));
+                found = true;
+            }
+        }
+        if (!found) {
+            throw new DatabaseException(400, "No products found with category: " + category, timeStamp);
+//            400 Bad Request: Hvis der er noget galt med klientens anmodning, såsom ugyldige forespørgselsparametre.
+        }
+        return filteredProducts;
+    }
+
+    public HealthProductDTO create(Product product) {
+        counter++;
+        if (product == null) {
+            throw new DatabaseException(400,"Product could not be added to database. Product is null",timeStamp);
+        }
+        product.setId(counter);
+        product.setExpireDate(expireDate);
+        products.put(counter, product);
+        return convertToDTO(product);
+    }
+
+    public HealthProductDTO update(HealthProductDTO healthProductDTO) {
+        if (!products.containsKey(healthProductDTO.getId())) {
+         throw new EntityNotFoundException("Product not found with ID: "+healthProductDTO.getId());
+        }
+        Product product = convertToEntity(healthProductDTO);
+        products.put(product.getId(), product);
+        return convertToDTO(product);
+    }
+
+    public HealthProductDTO delete(int id) {
+        if (products.containsKey(id)) {
+            Product removedProduct = products.get(id);
+            products.remove(id);
+            return convertToDTO(removedProduct);
+        }
+        return null;
+    }
+
+    public Set<HealthProductDTO> getTwoWeeksToExpire() {
+        Set<HealthProductDTO> toExpireSoon = new HashSet<>();
+        LocalDate twoWeeksFromNow = LocalDate.now().plusWeeks(2);
+
+        for (Product product : products.values()) {
+            if (product.getExpireDate().isBefore(twoWeeksFromNow) || product.getExpireDate().isEqual(twoWeeksFromNow)) {
+                toExpireSoon.add(convertToDTO(product));
+            }
+        }
+        return toExpireSoon;
+    }
+
+
+    private HealthProductDTO convertToDTO(Product product) {
+        return HealthProductDTO.builder()
+                .id(product.getId())
+                .category(product.getCategory())
+                .name(product.getName())
+                .calories(product.getCalories())
+                .price(product.getPrice())
+                .description(product.getDescription())
+                .expireDate(product.getExpireDate())
+                .build();
+    }
+
+    private Product convertToEntity(HealthProductDTO healthProductDTO) {
+        return Product.builder()
+                .id(healthProductDTO.getId())
+                .category(healthProductDTO.getCategory())
+                .name(healthProductDTO.getName())
+                .calories(healthProductDTO.getCalories())
+                .price(healthProductDTO.getPrice())
+                .description(healthProductDTO.getDescription())
+                .expireDate(healthProductDTO.getExpireDate())
+                .build();
+    }
 }
