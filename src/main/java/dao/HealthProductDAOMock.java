@@ -2,7 +2,6 @@ package dao;
 
 import dtos.HealthProductDTO;
 import exceptions.DatabaseException;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import persistence.model.Product;
 import java.time.LocalDate;
@@ -116,6 +115,10 @@ public class HealthProductDAOMock {
     }
 
     public Set<HealthProductDTO> getTwoWeeksToExpire() {
+
+//      Der er som sådan ikke behov for exception her, da det er ok at returnere et tomt Set
+//      hvis der ikke finde produkter som udløber indenfor 2 uger
+
         Set<HealthProductDTO> toExpireSoon = new HashSet<>();
         LocalDate twoWeeksFromNow = LocalDate.now().plusWeeks(2);
 
