@@ -47,11 +47,10 @@ public class Application {
 
     public Application setExceptionHandlers() {
 
-
         //2.2 error handling. I'm implementing global error handling. Controller and DAO throws the exceptions
         app.exception(APIException.class, (e, ctx) -> {
             logger.warning(
-                    "HTTP: " + ctx.status() + " Time: " + e.getTimeStamp() + " Method: " + ctx.method() + " Path: " + ctx.path() + " Client IP: " + ctx.ip() + "\n"
+                    "HTTP: " + e.getStatusCode() + " Time: " + e.getTimeStamp() + " Method: " + ctx.method() + " Path: " + ctx.path() + " Client IP: " + ctx.ip() + "\n"
             );
             ctx.status(e.getStatusCode());
             ctx.json(Map.of(
@@ -63,7 +62,7 @@ public class Application {
 
         app.exception(DatabaseException.class, (e, ctx) -> {
             logger.warning(
-                    "HTTP: " + ctx.status() + " Time: " + e.getTimeStamp() + " Method: " + ctx.method() + " Path: " + ctx.path() + " Client IP: " + ctx.ip() + "\n"
+                    "HTTP: " + e.getStatusCode() + " Time: " + e.getTimeStamp() + " Method: " + ctx.method() + " Path: " + ctx.path() + " Client IP: " + ctx.ip() + "\n"
             );
             ctx.status(e.getStatusCode());
             ctx.json(Map.of(

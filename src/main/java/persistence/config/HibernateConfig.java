@@ -22,9 +22,9 @@ public class HibernateConfig {
 
             Properties props = new Properties();
 
-            props.put("hibernate.connection.url", "jdbc:postgresql://localhost:5432/exam_prep_backend?currentSchema=public");
-            props.put("hibernate.connection.username", "postgres");
-            props.put("hibernate.connection.password", "postgres");
+            props.put("hibernate.connection.url", System.getenv("url"));
+            props.put("hibernate.connection.username", System.getenv("username"));
+            props.put("hibernate.connection.password", System.getenv("password"));
             props.put("hibernate.show_sql", "true"); // show sql in console
             props.put("hibernate.format_sql", "true"); // format sql in console
             props.put("hibernate.use_sql_comments", "true"); // show sql comments in console
