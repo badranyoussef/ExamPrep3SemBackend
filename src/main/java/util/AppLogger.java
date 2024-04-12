@@ -1,4 +1,4 @@
-package exceptions;
+package util;
 
 import java.io.IOException;
 import java.util.logging.*;
@@ -49,6 +49,7 @@ public class AppLogger {
             LogManager.getLogManager().reset();
             logger.setUseParentHandlers(false);
 
+            //logger til konosol - når projektet er færdigt og skal i produktion fjernes det så der kun logges til fil
             ConsoleHandler consoleHandler = new ConsoleHandler();
             consoleHandler.setLevel(Level.ALL);
             consoleHandler.setFormatter(new CustomFormatter());

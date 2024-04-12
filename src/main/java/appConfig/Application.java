@@ -3,7 +3,7 @@ package appConfig;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import exceptions.APIException;
-import exceptions.AppLogger;
+import util.AppLogger;
 import exceptions.DatabaseException;
 import io.javalin.Javalin;
 import io.javalin.apibuilder.EndpointGroup;
