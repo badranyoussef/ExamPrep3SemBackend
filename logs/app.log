@@ -1,0 +1,2 @@
+HTTP: 200 OK Time: 2024-04-11 22:57:42 Method: GET Path: /healthstore/api/healthproducts/ Client IP: 127.0.0.1
+HTTP: 200 OK Time: 2024-04-11 22:57:42 Method: GET Path: /healthstore/api/healthproducts/10 Client IP: 127.0.0.1

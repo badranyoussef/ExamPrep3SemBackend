@@ -36,7 +36,7 @@ public class HealthProductController implements IHealthProductController {
             Set<Product> allProducts = dao.getAll();
 
             if (allProducts.isEmpty()) {
-                ctx.status(400).result("No products available");
+                throw new APIException(200, "No products available", timestamp);
             } else {
                 List<HealthProductDTO> products = allProducts.stream().map(product -> dao.convertToDTO(product))
                         .toList();
@@ -51,7 +51,7 @@ public class HealthProductController implements IHealthProductController {
             int id = Integer.parseInt(ctx.pathParam("id"));
             HealthProductDTO dto = dao.getById(id);
             if (dto == null) {
-                ctx.status(400).result("The product you are looking for is not available");
+                throw new APIException(400, "The product you are looking for is not available", timestamp);
             } else {
                 ctx.json(dto);
             }

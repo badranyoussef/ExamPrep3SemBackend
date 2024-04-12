@@ -16,7 +16,7 @@ POST http://localhost:7070/healthstore/api/healthproducts/
 
 {
   "category": "Vitamin",
-  "name": "Vitamin D3 5000 IU",
+  "name": "Vitamin D3 5000 IU",d
   "price": 15.99,
   "calories": 0,
   "description": "Hjælper med at opretholde sunde knogler og tænder."
