@@ -8,7 +8,7 @@ GET http://localhost:7070/healthstore/api/healthproducts/
 
 ###
 
-GET http://localhost:7070/healthstore/api/healthproducts/10
+GET http://localhost:7070/healthstore/api/healthproducts/15
 
 ###
 

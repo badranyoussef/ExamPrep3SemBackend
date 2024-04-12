@@ -11,7 +11,7 @@ public class HealthProductRoutes {
 
     //1.4 & 1.4.2 develop rest API
     public EndpointGroup getHealthRoutes() {
-        return () -> path("/healthstore/api/healthproducts", () -> {
+        return () -> path("/healthproducts", () -> {
 
 //        frem for at implementere exceptions ved hver endpoint brnytter jeg globale exceptions som sætte op i javalin konfigurationen
 //
