@@ -1,10 +1,9 @@
 package controller;
 
-import dao.HealthProductDAOMock;
+import dao.HealthProductDAOMockInMemory;
 import dtos.HealthProductDTO;
 import exceptions.APIException;
 import io.javalin.http.Handler;
-import io.javalin.http.HttpStatus;
 import persistence.model.Product;
 
 import java.text.SimpleDateFormat;
@@ -15,7 +14,7 @@ import java.util.Set;
 //1.4.1
 public class HealthProductController implements IHealthProductController {
 
-    private static HealthProductDAOMock dao = new HealthProductDAOMock();
+    private static HealthProductDAOMockInMemory dao = new HealthProductDAOMockInMemory();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static String timestamp = dateFormat.format(new Date());
 

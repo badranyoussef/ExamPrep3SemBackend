@@ -11,7 +11,7 @@ import java.util.*;
 
 // 1.4.3
 @Getter
-public class HealthProductDAOMock {
+public class HealthProductDAOMockInMemory implements iDAO{
 
     private String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
@@ -22,15 +22,7 @@ public class HealthProductDAOMock {
     public Set<Product> getAll() {
         return new HashSet<>(products.values());
     }
-
-    public HealthProductDTO getById(int id) {
-        Product product = products.get(id);
-        if (product != null) {
-            return convertToDTO(product);
-        }
-        return null;
-    }
-
+    @Override
     public boolean initiateProducts() {
 
         Product p1 = new Product("Mineral", "Magnesium", 63.36, 229, "Magnesium for bedre sundhed og velvære.", LocalDate.of(2024, 6, 20));
@@ -59,6 +51,16 @@ public class HealthProductDAOMock {
         return false;
     }
 
+    @Override
+    public HealthProductDTO getById(int id) {
+        Product product = products.get(id);
+        if (product == null) {
+            throw new DatabaseException(400, "No products found with ID: " + id, timeStamp);
+        }
+        return convertToDTO(product);
+    }
+
+    @Override
     public Set<HealthProductDTO> getByCategory(String category) {
         Set<HealthProductDTO> filteredProducts = new HashSet<>();
         boolean found = false;
@@ -75,7 +77,7 @@ public class HealthProductDAOMock {
         }
         return filteredProducts;
     }
-
+    @Override
     public HealthProductDTO create(Product product) {
         counter++;
         try{
@@ -87,7 +89,7 @@ public class HealthProductDAOMock {
         }
         return convertToDTO(product);
     }
-
+    @Override
     public HealthProductDTO update(HealthProductDTO healthProductDTO) {
 
         Product product = products.get(healthProductDTO.getId());
@@ -103,7 +105,7 @@ public class HealthProductDAOMock {
         }
         return convertToDTO(product);
     }
-
+    @Override
     public HealthProductDTO delete(int id) {
         if (products.containsKey(id)) {
             Product removedProduct = products.remove(id); // .remove() returnerer det fjernede objekt, hvis det findes
@@ -112,7 +114,7 @@ public class HealthProductDAOMock {
             throw new DatabaseException(400, "Product not found with ID: " + id, timeStamp);
         }
     }
-
+    @Override
     public Set<HealthProductDTO> getTwoWeeksToExpire() {
 
 //      Der er som sådan ikke behov for exception her, da det er ok at returnere et tomt Set
@@ -128,8 +130,13 @@ public class HealthProductDAOMock {
         }
         return toExpireSoon;
     }
+    @Override
+    public List<HealthProductDTO> productsLessThan50Calories(){
 
+        return null;
+    }
 
+    @Override
     public HealthProductDTO convertToDTO(Product product) {
         return HealthProductDTO.builder()
                 .id(product.getId())
@@ -141,7 +148,7 @@ public class HealthProductDAOMock {
                 .expireDate(product.getExpireDate())
                 .build();
     }
-
+    @Override
     public Product convertToEntity(HealthProductDTO healthProductDTO) {
         return Product.builder()
                 .id(healthProductDTO.getId())
