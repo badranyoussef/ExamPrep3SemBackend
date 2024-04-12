@@ -5,6 +5,7 @@ import dtos.HealthProductDTO;
 import exceptions.APIException;
 import io.javalin.http.Handler;
 import persistence.model.Product;
+import persistence.model.Storage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,14 +15,15 @@ import java.util.Set;
 //1.4.1
 public class HealthProductController implements IHealthProductController {
 
-    private static HealthProductDAOMockInMemory dao = new HealthProductDAOMockInMemory();
+    private static HealthProductDAOMockInMemory daoInMemmory = new HealthProductDAOMockInMemory();
+    private static Storage daoDB = new Storage();
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static String timestamp = dateFormat.format(new Date());
 
 
     public Handler initiateProducts() {
         return ctx -> {
-            if (dao.initiateProducts()) {
+            if (daoInMemmory.initiateProducts()) {
                 ctx.result("Products initialized");
             } else {
                 ctx.status(400).result("Products not initialized");
@@ -32,12 +34,12 @@ public class HealthProductController implements IHealthProductController {
     @Override
     public Handler getAll() {
         return ctx -> {
-            Set<Product> allProducts = dao.getAll();
+            Set<Product> allProducts = daoInMemmory.getAll();
 
             if (allProducts.isEmpty()) {
                 throw new APIException(200, "No products available", timestamp);
             } else {
-                List<HealthProductDTO> products = allProducts.stream().map(product -> dao.convertToDTO(product))
+                List<HealthProductDTO> products = allProducts.stream().map(product -> daoInMemmory.convertToDTO(product))
                         .toList();
                 ctx.json(products);
             }
@@ -48,7 +50,7 @@ public class HealthProductController implements IHealthProductController {
     public Handler getById() {
         return ctx -> {
             int id = Integer.parseInt(ctx.pathParam("id"));
-            HealthProductDTO dto = dao.getById(id);
+            HealthProductDTO dto = daoInMemmory.getById(id);
             if (dto == null) {
                 throw new APIException(400, "The product you are looking for is not available", timestamp);
             } else {
@@ -61,7 +63,7 @@ public class HealthProductController implements IHealthProductController {
     public Handler create() {
         return ctx -> {
             Product product = ctx.bodyAsClass(Product.class);
-            HealthProductDTO createdProduct = dao.create(product);
+            HealthProductDTO createdProduct = daoInMemmory.create(product);
             if(createdProduct != null) {
                 ctx.status(200).json(createdProduct);
             }else{
@@ -89,7 +91,7 @@ public class HealthProductController implements IHealthProductController {
             int id = Integer.parseInt(ctx.pathParam("id"));
             HealthProductDTO productDTO = ctx.bodyAsClass(HealthProductDTO.class);
             productDTO.setId(id);
-            HealthProductDTO updatedProduct = dao.update(productDTO);
+            HealthProductDTO updatedProduct = daoInMemmory.update(productDTO);
             if (updatedProduct != null) {
                 ctx.json(updatedProduct);
             } else {
@@ -104,7 +106,7 @@ public class HealthProductController implements IHealthProductController {
     public Handler delete() {
         return ctx -> {
             int id = Integer.parseInt(ctx.pathParam("id"));
-            HealthProductDTO productDTO = dao.delete(id);
+            HealthProductDTO productDTO = daoInMemmory.delete(id);
             if (productDTO == null) {
                 ctx.status(400).result("Product not found");
             } else {
@@ -112,18 +114,4 @@ public class HealthProductController implements IHealthProductController {
             }
         };
     }
-
-//    @Override
-//    public Handler delete() {
-//        return ctx -> {
-//            int id = Integer.parseInt(ctx.pathParam("id"));
-//
-//            if (dao.getProducts().containsKey(id)) {
-//                HealthProductDTO productDTO = dao.delete(id);
-//                ctx.json(productDTO).result("Product successfully deleted").status(201);
-//            } else {
-//                throw new APIException(400, "Product not found.", "" + timestamp);
-//            }
-//        };
-//    }
 }

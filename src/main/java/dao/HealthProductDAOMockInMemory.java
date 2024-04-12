@@ -11,7 +11,7 @@ import java.util.*;
 
 // 1.4.3
 @Getter
-public class HealthProductDAOMockInMemory implements iDAO{
+public class HealthProductDAOMockInMemory implements iDAO<Product, HealthProductDTO>{
 
     private String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 

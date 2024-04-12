@@ -6,24 +6,25 @@ import persistence.model.Product;
 import java.util.List;
 import java.util.Set;
 
-public interface iDAO {
+public interface iDAO<T, D> {
 
     boolean initiateProducts();
-    HealthProductDTO getById(int id);
 
-    Set<HealthProductDTO> getByCategory(String category);
+    D getById(int id);
 
-    HealthProductDTO create(Product product);
+    Set<D> getByCategory(String category);
 
-    HealthProductDTO update(HealthProductDTO healthProductDTO);
+    D create(T product);
 
-    HealthProductDTO delete(int id);
+    D update(D healthProductDTO);
 
-    Set<HealthProductDTO> getTwoWeeksToExpire();
+    D delete(int id);
 
-    List<HealthProductDTO> productsLessThan50Calories();
+    Set<D> getTwoWeeksToExpire();
 
-    HealthProductDTO convertToDTO(Product product);
+    List<D> productsLessThan50Calories();
 
-    Product convertToEntity(HealthProductDTO healthProductDTO);
+    D convertToDTO(T product);
+
+    T convertToEntity(D healthProductDTO);
 }

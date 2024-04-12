@@ -24,6 +24,9 @@ public class Product {
     private int calories;
     private String description;
     private LocalDate expireDate;
+    @ManyToOne
+    @JoinColumn(name = "storage_id")
+    private Storage storage;
 
     public Product(String category, String name, double price, int calories, String description, LocalDate expireDate) {
         this.category = category;
