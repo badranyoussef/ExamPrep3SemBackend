@@ -8,10 +8,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.stream.Collectors;
 
 // 1.4.3
 @Getter
-public class HealthProductDAOMockInMemory implements iDAO<Product, HealthProductDTO>{
+public class HealthProductDaoMockInMemory implements iDAO<HealthProductDTO, Product>{
 
     private String timeStamp = LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
 
@@ -19,10 +20,13 @@ public class HealthProductDAOMockInMemory implements iDAO<Product, HealthProduct
     private int counter = 0;
     private LocalDate expireDate = LocalDate.now().plusYears(2);
 
-    public Set<Product> getAll() {
-        return new HashSet<>(products.values());
-    }
     @Override
+    public Set<HealthProductDTO> getAll() {
+        return products.values().stream()  // Opretter en stream fra værdierne i mappen
+                .map(this::convertToDTO)  // Konverter hvert Product til en HealthProductDTO
+                .collect(Collectors.toSet());  // Samler dem i et Set
+    }
+
     public boolean initiateProducts() {
 
         Product p1 = new Product("Mineral", "Magnesium", 63.36, 229, "Magnesium for bedre sundhed og velvære.", LocalDate.of(2024, 6, 20));
@@ -60,7 +64,7 @@ public class HealthProductDAOMockInMemory implements iDAO<Product, HealthProduct
         return convertToDTO(product);
     }
 
-    @Override
+
     public Set<HealthProductDTO> getByCategory(String category) {
         Set<HealthProductDTO> filteredProducts = new HashSet<>();
         boolean found = false;
@@ -77,6 +81,7 @@ public class HealthProductDAOMockInMemory implements iDAO<Product, HealthProduct
         }
         return filteredProducts;
     }
+
     @Override
     public HealthProductDTO create(Product product) {
         counter++;
@@ -96,7 +101,6 @@ public class HealthProductDAOMockInMemory implements iDAO<Product, HealthProduct
         if (product == null) {
             throw new DatabaseException(400, "Product not found with ID: " + healthProductDTO.getId(), timeStamp);
         }
-
         try{
             product = convertToEntity(healthProductDTO);
             products.put(product.getId(), product);
@@ -114,7 +118,7 @@ public class HealthProductDAOMockInMemory implements iDAO<Product, HealthProduct
             throw new DatabaseException(400, "Product not found with ID: " + id, timeStamp);
         }
     }
-    @Override
+
     public Set<HealthProductDTO> getTwoWeeksToExpire() {
 
 //      Der er som sådan ikke behov for exception her, da det er ok at returnere et tomt Set
@@ -130,13 +134,20 @@ public class HealthProductDAOMockInMemory implements iDAO<Product, HealthProduct
         }
         return toExpireSoon;
     }
-    @Override
+
     public List<HealthProductDTO> productsLessThan50Calories(){
 
-        return null;
+        List<HealthProductDTO> list = new ArrayList<>();
+
+        for (Product product : products.values()) {
+            if (product.getCalories()>50) {
+                list.add(convertToDTO(product));
+            }
+        }
+        return list;
     }
 
-    @Override
+
     public HealthProductDTO convertToDTO(Product product) {
         return HealthProductDTO.builder()
                 .id(product.getId())
@@ -148,7 +159,7 @@ public class HealthProductDAOMockInMemory implements iDAO<Product, HealthProduct
                 .expireDate(product.getExpireDate())
                 .build();
     }
-    @Override
+
     public Product convertToEntity(HealthProductDTO healthProductDTO) {
         return Product.builder()
                 .id(healthProductDTO.getId())

@@ -16,7 +16,7 @@ POST http://localhost:7070/healthstore/api/healthproducts/
 
 {
   "category": "Vitamin",
-  "name": "Vitamin D3 5000 IU",d
+  "name": "Vitamin D3 5000 IU",
   "price": 15.99,
   "calories": 0,
   "description": "Hjælper med at opretholde sunde knogler og tænder."
@@ -38,4 +38,4 @@ PUT http://localhost:7070/healthstore/api/healthproducts/10
 
 ###
 
-DELETE http://localhost:7070/healthstore/api/healthproducts/1
+DELETE http://localhost:7070/healthstore/api/healthproducts/10

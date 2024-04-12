@@ -12,12 +12,27 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-public class storageDAO implements iDAO<Product, HealthProductDTO> {
+public class HealthProductDaoDB implements iDAO<HealthProductDTO, Product> {
 
     EntityManagerFactory emf = HibernateConfig.getEntityManagerFactoryConfig(false);
 
     @Override
+    public Set<HealthProductDTO> getAll() {
+        try(EntityManager em = emf.createEntityManager()){
+            String jpql = "SELECT p FROM Product p";
+            TypedQuery<Product> query = em.createQuery(jpql, Product.class);
+            Set<HealthProductDTO> result = query.getResultList().stream()
+                    .map(this::convertToDTO)// Konverter hvert Product til en HealthProductDTO, bruger this for at indikerer at det er klassens egen metode der bruges
+                    .collect(Collectors.toSet());
+            return result;
+        }catch(DatabaseException e){
+            throw new DatabaseException(e.getStatusCode(),"Unable to get products within 2 weeks expiration", e.getTimeStamp());
+        }
+    }
+
+
     public boolean initiateProducts() {
         Product p1 = new Product("Mineral", "Magnesium", 63.36, 229, "Magnesium for bedre sundhed og velvære.", LocalDate.of(2024, 6, 20));
         Product p2 = new Product("Vitamin", "Multivitamin", 25.97, 101, "Multivitamin for bedre sundhed og velvære.", LocalDate.of(2025, 4, 5));
@@ -48,7 +63,6 @@ public class storageDAO implements iDAO<Product, HealthProductDTO> {
     @Override
     public HealthProductDTO getById(int id) {
         Product product = null;
-
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             product = em.find(Product.class, id);
@@ -59,7 +73,7 @@ public class storageDAO implements iDAO<Product, HealthProductDTO> {
         return convertToDTO(product);
     }
 
-    @Override
+
     public Set<HealthProductDTO> getByCategory(String category) {
         try (EntityManager em = emf.createEntityManager()) {
             TypedQuery<HealthProductDTO> query = (TypedQuery<HealthProductDTO>) em.createQuery(
@@ -88,31 +102,87 @@ public class storageDAO implements iDAO<Product, HealthProductDTO> {
 
     @Override
     public HealthProductDTO update(HealthProductDTO healthProductDTO) {
-        return null;
+        Product product = convertToEntity(healthProductDTO);
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            em.merge(product);
+            em.getTransaction().commit();
+        }catch (DatabaseException e){
+            throw new DatabaseException(e.getStatusCode(),"Was unable to update product in database",e.getTimeStamp());
+        }
+        return healthProductDTO;
     }
 
     @Override
     public HealthProductDTO delete(int id) {
-        return null;
+        HealthProductDTO productDTO = getById(id);
+        Product product = convertToEntity(productDTO);
+        try(EntityManager em = emf.createEntityManager()){
+            em.getTransaction().begin();
+            em.remove(product);
+            em.getTransaction().commit();
+        }catch (DatabaseException e){
+            throw new DatabaseException(e.getStatusCode(), "Unable to delete product from database. Product might not be in DB", e.getTimeStamp());
+        }
+        return productDTO;
     }
 
-    @Override
+
     public Set<HealthProductDTO> getTwoWeeksToExpire() {
-        return null;
+        try(EntityManager em = emf.createEntityManager()){
+            LocalDate today = LocalDate.now();
+            LocalDate twoWeeksAhead = today.plusWeeks(2);
+            String jpql = "SELECT p FROM Product p WHERE p.expireDate <= :twoWeeksAhead AND p.expireDate >= :today";
+            TypedQuery<Product> query = em.createQuery(jpql, Product.class);
+            query.setParameter("today", today);
+            query.setParameter("twoWeeksAhead", twoWeeksAhead);
+            Set<HealthProductDTO> result = query.getResultList().stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toSet());
+            return result;
+        }catch(DatabaseException e){
+            throw new DatabaseException(e.getStatusCode(),"Unable to get products within 2 weeks expiration", e.getTimeStamp());
+        }
     }
 
-    @Override
+
     public List<HealthProductDTO> productsLessThan50Calories() {
-        return null;
+        try(EntityManager em = emf.createEntityManager()){
+            String jpql = "SELECT p FROM Product p WHERE p.calories < :calories";
+            TypedQuery<Product> query = em.createQuery(jpql, Product.class);
+            query.setParameter("calories", "5");
+            List<HealthProductDTO> result = query.getResultList().stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+            return result;
+        }catch(DatabaseException e){
+            throw new DatabaseException(e.getStatusCode(),"Unable to get products within with less than 50 calories", e.getTimeStamp());
+        }
     }
 
-    @Override
+
     public HealthProductDTO convertToDTO(Product product) {
-        return null;
+        return HealthProductDTO.builder()
+                .id(product.getId())
+                .category(product.getCategory())
+                .name(product.getName())
+                .calories(product.getCalories())
+                .price(product.getPrice())
+                .description(product.getDescription())
+                .expireDate(product.getExpireDate())
+                .build();
     }
 
-    @Override
+
     public Product convertToEntity(HealthProductDTO healthProductDTO) {
-        return null;
+        return Product.builder()
+                .id(healthProductDTO.getId())
+                .category(healthProductDTO.getCategory())
+                .name(healthProductDTO.getName())
+                .calories(healthProductDTO.getCalories())
+                .price(healthProductDTO.getPrice())
+                .description(healthProductDTO.getDescription())
+                .expireDate(healthProductDTO.getExpireDate())
+                .build();
     }
 }

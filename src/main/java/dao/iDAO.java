@@ -1,30 +1,21 @@
 package dao;
 
 import dtos.HealthProductDTO;
+import dtos.StorageDTO;
 import persistence.model.Product;
+import persistence.model.Storage;
 
 import java.util.List;
 import java.util.Set;
 
-public interface iDAO<T, D> {
+public interface iDAO<D, T> {
 
-    boolean initiateProducts();
-
+    Set<D> getAll();
     D getById(int id);
-
-    Set<D> getByCategory(String category);
 
     D create(T product);
 
-    D update(D healthProductDTO);
+    D update(D DTO);
 
     D delete(int id);
-
-    Set<D> getTwoWeeksToExpire();
-
-    List<D> productsLessThan50Calories();
-
-    D convertToDTO(T product);
-
-    T convertToEntity(D healthProductDTO);
 }
