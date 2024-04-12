@@ -36,7 +36,7 @@ public class AppLogger {
 //    }
 
 
-//    Her er koden modificeret så KUN den meddelelse jeg defineres bliver logget. se definitionen i main
+//  Her er koden modificeret så KUN den meddelelse jeg defineres bliver logget. se definitionen i main
 
     private static final Logger logger = Logger.getLogger("AppLogger");
 
@@ -75,5 +75,4 @@ public class AppLogger {
             return formatMessage(record);
         }
     }
-
 }

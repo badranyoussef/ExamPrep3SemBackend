@@ -1,12 +1,17 @@
 package dao;
 
 import dtos.HealthProductDTO;
+import jakarta.persistence.EntityManagerFactory;
+import persistence.config.HibernateConfig;
 import persistence.model.Product;
 
 import java.util.List;
 import java.util.Set;
 
 public class HealthProductDAODB implements iDAO{
+
+    EntityManagerFactory emf = HibernateConfig.getEntityManagerFactoryConfig(false);
+
     @Override
     public boolean initiateProducts() {
         return false;

@@ -1,20 +1,34 @@
 package app;
 
 import appConfig.Application;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import persistence.config.HibernateConfig;
+import persistence.model.Product;
 import rest.routes.HealthProductRoutes;
+
+import java.time.LocalDate;
 
 public class Main {
 //    private static final Logger logger = AppLogger.getLogger();
 
     public static void main(String[] args) {
 
-        HealthProductRoutes routes = new HealthProductRoutes();
+        EntityManagerFactory emf = HibernateConfig.getEntityManagerFactoryConfig(false);
 
-        //1.1 creating java-project using javalin framework
-        Application healthStoreApp = Application.getInstance();
-        healthStoreApp.startServer(7070);
-        healthStoreApp.setExceptionHandlers();
-        healthStoreApp.setRoute(routes.getHealthRoutes());
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        em.persist(new Product("Mineral", "Magnesium", 63.36, 229, "Magnesium for bedre sundhed og velvære.", LocalDate.of(2024, 6, 20)));
+        em.getTransaction().commit();
+
+
+//        HealthProductRoutes routes = new HealthProductRoutes();
+//
+//        //1.1 creating java-project using javalin framework
+//        Application healthStoreApp = Application.getInstance();
+//        healthStoreApp.startServer(7070);
+//        healthStoreApp.setExceptionHandlers();
+//        healthStoreApp.setRoute(routes.getHealthRoutes());
 
 
 //        //1.1 creating java-project using javalin framework
