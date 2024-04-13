@@ -83,7 +83,6 @@ public class StorageController implements IHealthProductController {
             } else {
                 throw new APIException(ctx.statusCode(), "No data found.", "" + timestamp);
             }
-
         };
     }
 

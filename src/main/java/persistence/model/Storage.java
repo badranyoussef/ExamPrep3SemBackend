@@ -1,5 +1,6 @@
 package persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,8 +21,10 @@ public class Storage {
     @Column(name = "id")
     private int id;
     private LocalDate updatedTimeStamp;
-    private int totalAmount;
-    private int shelfNumber;
+    private int totalAmount; //total produkter på hylden
+    private int shelfNumber; //hylde nummer
+
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "storage", fetch = FetchType.EAGER)
     Set<Product> products = new HashSet<>();
 
@@ -51,6 +54,15 @@ public class Storage {
                 ", updatedTimeStamp=" + updatedTimeStamp +
                 ", totalAmount=" + totalAmount +
                 ", shelfNumber=" + shelfNumber +
+                ", products=" + products +
                 '}';
     }
+
+    @PrePersist
+    @PreUpdate
+    private void updateTimeStamp(){
+        updatedTimeStamp = LocalDate.now();
+        totalAmount = products.size();
+    }
+
 }

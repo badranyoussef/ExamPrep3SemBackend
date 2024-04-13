@@ -1,0 +1,46 @@
+### get all products
+GET http://localhost:7070/healthstore/api/storages/
+
+###
+
+GET http://localhost:7070/healthstore/api/storages/3
+
+###
+
+POST http://localhost:7070/healthstore/api/storages/
+
+{
+  "totalAmount": 0,
+  "shelfNumber": 3
+}
+
+###
+
+
+PUT http://localhost:7070/healthstore/api/storages/4
+
+{
+  "shelfNumber": 3,
+  "products": [
+    {
+      "category": "Mineral",
+      "name": "Zink",
+      "price": 74.9,
+      "calories": 329,
+      "description": "Zink for bedre sundhed og velvære.",
+      "expireDate": "2024-10-03"
+    },
+    {
+      "category": "Vitamin",
+      "name": "Multivitamin",
+      "price": 25.97,
+      "calories": 101,
+      "description": "Multivitamin for bedre sundhed og velvære.",
+      "expireDate": "2025-04-05"
+    }
+  ]
+}
+
+###
+
+DELETE http://localhost:7070/healthstore/api/storages/10

@@ -53,21 +53,6 @@ public class Route {
     public EndpointGroup getStorageRoutes() {
         return () -> path("/storages", () -> {
 
-//        frem for at implementere exceptions ved hver endpoint brnytter jeg globale exceptions som sætte op i javalin konfigurationen
-//
-//            post("/initiate", ctx ->
-//            {
-//                try {
-//                    healthProductController.initiateProducts().handle(ctx);
-//                } catch (APIException e) {
-//                    ctx.json(Map.of(
-//                            "status", e.getStatusCode(),
-//                            "message", "API ERROR " + e.getMessage(),
-//                            "timestamp", e.getTimeStamp().toString()
-//                    ));
-//                }
-//            });
-
             // initiate all product
             post("/initiate", ctx -> storageController.initiateProducts().handle(ctx));
 

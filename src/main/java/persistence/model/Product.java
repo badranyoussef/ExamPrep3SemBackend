@@ -1,5 +1,6 @@
     package persistence.model;
 
+    import com.fasterxml.jackson.annotation.JsonIgnore;
     import jakarta.persistence.*;
     import lombok.*;
 
@@ -24,6 +25,8 @@
         private int calories;
         private String description;
         private LocalDate expireDate;
+
+        @JsonIgnore
         @ManyToOne
         @JoinColumn(name = "storage_id")
         private Storage storage;
@@ -47,7 +50,6 @@
                     ", calories=" + calories +
                     ", description='" + description + '\'' +
                     ", expireDate=" + expireDate +
-                    ", storage=" + storage +
                     '}';
         }
     }

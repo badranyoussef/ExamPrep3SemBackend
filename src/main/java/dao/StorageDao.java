@@ -61,6 +61,13 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
     @Override
     public StorageDTO update(StorageDTO storageDTO) {
         Storage storage = new Storage(storageDTO.getId(), storageDTO.getUpdatedTimeStamp(), storageDTO.getTotalAmount(), storageDTO.getShelfNumber(), storageDTO.getProducts());
+
+        if(!storageDTO.getProducts().isEmpty()) {
+            for (Product p : storage.getProducts()) {
+                storage.addProduct(p);
+            }
+        }
+
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             em.merge(storage);
@@ -93,6 +100,10 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
             Product product = em.find(Product.class, productId);
             product.setStorage(storage);
             storage.addProduct(product);
+
+            // Opdater totalAmount baseret på antallet af produkter i lageret
+            storage.setTotalAmount(storage.getProducts().size());
+
             em.merge(storage);
             em.getTransaction().commit();
             return productDao.convertToDTO(product);
