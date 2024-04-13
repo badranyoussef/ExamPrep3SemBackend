@@ -68,19 +68,6 @@ public class HealthProductController implements IHealthProductController {
         };
     }
 
-//    @Override
-//    public Handler create() {
-//        return ctx -> {
-//            Product product = ctx.bodyAsClass(Product.class);
-//            if (product == null) {
-//                ctx.status(HttpStatus.BAD_REQUEST).result("Unable to stores new product");
-//            } else {
-//                dao.create(product);
-//                ctx.json(product);
-//            }
-//        };
-//    }
-
     @Override
     public Handler update() {
         return ctx -> {

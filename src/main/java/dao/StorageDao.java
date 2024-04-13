@@ -1,5 +1,6 @@
 package dao;
 
+import dtos.HealthProductDTO;
 import dtos.StorageDTO;
 import exceptions.DatabaseException;
 import jakarta.persistence.EntityManager;
@@ -9,6 +10,7 @@ import persistence.config.HibernateConfig;
 import persistence.model.Product;
 import persistence.model.Storage;
 
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -84,7 +86,7 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
         return storageDTO;
     }
 
-    public void addProductToStorage(int storageId, int productId) {
+    public HealthProductDTO addProductToStorage(int storageId, int productId) {
         try (EntityManager em = emf.createEntityManager()) {
             em.getTransaction().begin();
             Storage storage = em.find(Storage.class, storageId);
@@ -93,6 +95,7 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
             storage.addProduct(product);
             em.merge(storage);
             em.getTransaction().commit();
+            return productDao.convertToDTO(product);
         } catch (DatabaseException e) {
             throw new DatabaseException(e.getStatusCode(), "Unable to add product to storage", e.getTimeStamp());
         }
@@ -128,5 +131,20 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
                 .shelfNumber(storageDTO.getShelfNumber())
                 .products(storageDTO.getProducts())
                 .build();
+    }
+
+    public boolean initiateProducts() {
+
+        Storage s1 = new Storage(LocalDate.now(), 10,2);
+        Storage s2 = new Storage(LocalDate.now(), 5,10);
+
+        try {
+            create(s1);
+            create(s2);
+            return true;
+        } catch (DatabaseException e) {
+            throw new DatabaseException(e.getStatusCode(), "Storage could not be added to database.", e.getTimeStamp());
+        }
+
     }
 }
