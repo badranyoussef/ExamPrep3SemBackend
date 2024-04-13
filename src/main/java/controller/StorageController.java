@@ -113,7 +113,6 @@ public class StorageController implements IHealthProductController {
         };
     }
 
-
     public Handler getProductsByStorageShelf() {
         return ctx -> {
             int storageId = Integer.parseInt(ctx.pathParam("id"));
@@ -124,7 +123,6 @@ public class StorageController implements IHealthProductController {
             }else{
                 throw new APIException(ctx.statusCode(), "No products available", timestamp);
             }
-
         };
     }
 }

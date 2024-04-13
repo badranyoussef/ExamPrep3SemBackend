@@ -43,4 +43,4 @@ PUT http://localhost:7070/healthstore/api/storages/4
 
 ###
 
-DELETE http://localhost:7070/healthstore/api/storages/10
+DELETE http://localhost:7070/healthstore/api/storages/1

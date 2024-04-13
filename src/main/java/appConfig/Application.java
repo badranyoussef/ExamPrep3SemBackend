@@ -86,4 +86,9 @@ public class Application {
         });
         return instance;
     }
+
+    public void stopServer() {
+        app.stop();
+    }
+
 }
