@@ -88,18 +88,24 @@ class RouteTest {
     @Test
     @DisplayName("Testing Post method - create storage")
     public void test2() {
+        int expectedTotalAmount = 0;
+        int expectedshelfNumber = 2;
 
-        String setBody = "{\"name\": \"UserTest\", \"email\": \"1234\", \"password\": \"1234\", \"phone\": \"1234\"}";
+
+        String setBody = "{\"shelfNumber\": \"2\"}";
 
         RestAssured
                 .given()
                 .contentType(ContentType.JSON)
+                .body(setBody)
                 .when()
-                .get("/storages/{id}", storageId)
+                .post("/storages")
                 .then()
-                .statusCode(200) // Skift til den relevante statuskode
-                .body("updatedTimeStamp", notNullValue())
-                .body("updatedTimeStamp", equalTo(excpected)); // Skift til den relevante attribut
+                .statusCode(200)
+                .body("shelfNumber", equalTo(expectedshelfNumber))
+                .body("totalAmount",equalTo(expectedTotalAmount))
+                .extract().response().prettyPrint();
+
     }
 
 }
