@@ -68,7 +68,7 @@ class RouteTest {
 
     @Test
     @DisplayName("Testing is timestamp is updated when persisting")
-    public void test0() {
+    public void test1() {
 
         int storageId = 1;
 
@@ -86,12 +86,10 @@ class RouteTest {
     }
 
     @Test
-    @DisplayName("Testing is timestamp is updated when persisting")
-    public void test0() {
+    @DisplayName("Testing Post method - create storage")
+    public void test2() {
 
-        int storageId = 1;
-
-        List<Integer> excpected = Arrays.asList(2024, 4, 13); // Eksempel på den faktiske liste
+        String setBody = "{\"name\": \"UserTest\", \"email\": \"1234\", \"password\": \"1234\", \"phone\": \"1234\"}";
 
         RestAssured
                 .given()
