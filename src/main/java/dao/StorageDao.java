@@ -40,10 +40,10 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
             em.getTransaction().begin();
             storage = em.find(Storage.class, id);
             em.getTransaction().commit();
+            return convertToDTO(storage);
         } catch (DatabaseException e) {
             throw new DatabaseException(e.getStatusCode(), "Storage could not be added to database. Product is null", e.getTimeStamp());
         }
-        return convertToDTO(storage);
     }
 
     @Override
@@ -52,10 +52,10 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
             em.getTransaction().begin();
             em.persist(storage);
             em.getTransaction().commit();
+            return convertToDTO(storage);
         } catch (DatabaseException e) {
             throw new DatabaseException(e.getStatusCode(), "Product could not be added to database. Product is null", e.getTimeStamp());
         }
-        return convertToDTO(storage);
     }
 
     @Override
@@ -72,10 +72,10 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
             em.getTransaction().begin();
             em.merge(storage);
             em.getTransaction().commit();
+            return storageDTO;
         } catch (DatabaseException e) {
             throw new DatabaseException(e.getStatusCode(), "Was unable to update product in database", e.getTimeStamp());
         }
-        return storageDTO;
     }
 
 
@@ -87,10 +87,10 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
             em.getTransaction().begin();
             em.remove(storage);
             em.getTransaction().commit();
+            return storageDTO;
         } catch (DatabaseException e) {
             throw new DatabaseException(e.getStatusCode(), "Unable to delete storage from database. Product might not be in DB", e.getTimeStamp());
         }
-        return storageDTO;
     }
 
     public HealthProductDTO addProductToStorage(int storageId, int productId) {
@@ -156,6 +156,5 @@ public class StorageDao implements iDAO<StorageDTO, Storage> {
         } catch (DatabaseException e) {
             throw new DatabaseException(e.getStatusCode(), "Storage could not be added to database.", e.getTimeStamp());
         }
-
     }
 }

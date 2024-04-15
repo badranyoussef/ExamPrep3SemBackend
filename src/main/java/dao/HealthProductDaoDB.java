@@ -67,10 +67,10 @@ public class HealthProductDaoDB implements iDAO<HealthProductDTO, Product> {
             em.getTransaction().begin();
             product = em.find(Product.class, id);
             em.getTransaction().commit();
+            return convertToDTO(product);
         } catch (DatabaseException e) {
             throw new DatabaseException(e.getStatusCode(), "Product could not be added to database. Product is null", e.getTimeStamp());
         }
-        return convertToDTO(product);
     }
 
 
@@ -94,10 +94,10 @@ public class HealthProductDaoDB implements iDAO<HealthProductDTO, Product> {
             em.getTransaction().begin();
             em.persist(product);
             em.getTransaction().commit();
+            return convertToDTO(product);
         } catch (DatabaseException e) {
             throw new DatabaseException(e.getStatusCode(), "Product could not be added to database. Product is null", e.getTimeStamp());
         }
-        return convertToDTO(product);
     }
 
     @Override
@@ -121,10 +121,10 @@ public class HealthProductDaoDB implements iDAO<HealthProductDTO, Product> {
             em.getTransaction().begin();
             em.remove(product);
             em.getTransaction().commit();
+            return productDTO;
         }catch (DatabaseException e){
             throw new DatabaseException(e.getStatusCode(), "Unable to delete product from database. Product might not be in DB", e.getTimeStamp());
         }
-        return productDTO;
     }
 
 

@@ -89,10 +89,10 @@ public class HealthProductDaoMockInMemory implements iDAO<HealthProductDTO, Prod
             product.setId(counter);
             product.setExpireDate(expireDate);
             products.put(counter, product);
+            return convertToDTO(product);
         }catch(DatabaseException e){
             throw new DatabaseException(e.getStatusCode(),"Product could not be added to database. Product is null",e.getTimeStamp());
         }
-        return convertToDTO(product);
     }
     @Override
     public HealthProductDTO update(HealthProductDTO healthProductDTO) {
@@ -104,10 +104,10 @@ public class HealthProductDaoMockInMemory implements iDAO<HealthProductDTO, Prod
         try{
             product = convertToEntity(healthProductDTO);
             products.put(product.getId(), product);
+            return convertToDTO(product);
         }catch(DatabaseException e){
             throw new DatabaseException(e.getStatusCode(),"Unable to update product",e.getTimeStamp());
         }
-        return convertToDTO(product);
     }
     @Override
     public HealthProductDTO delete(int id) {
